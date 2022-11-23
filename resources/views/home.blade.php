@@ -19,14 +19,27 @@
   display: inline-block;
 }
 
-input {
+button.btn.btn-blue {
+    background: hsl(198deg 73% 43%);
+    color: white;
+    padding: 10px 50px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-align: center;
+    /* width: 100%; */
+    display: block;
+}
+
+input, select {
   border: 1px solid transparent;
   background-color: #f1f1f1;
   border: 1px solid #333;
   border-radius: 5px;
   padding: 10px;
   font-size: 16px;
-  width: 400px;
+  width: 225px;
 }
 
 .autocomplete-suggestions {
@@ -34,6 +47,7 @@ input {
     padding: 5px;
     overflow-x: hidden;
     overflow-y: scroll;
+    background: #fff;
 }
     body {
         font-family: 'Nunito', sans-serif;
@@ -42,11 +56,33 @@ input {
     </head>
     <body class="antialiased">
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+            <form method='POST' action="{{route('search')}}">
+                @csrf
             <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex justify-center pt-8 sm:justify-start sm:pt-0 autocomplete">
-                    <input type="text"  class="px-4 py-3 rounded-full" name="country" id="autocomplete" placeholder="Search Locations"/>
+                    <input type="text"  class="px-4 py-3 rounded-full" name="keyword" placeholder="Search Keyword" />
+                </div>
+                <div class="flex justify-center pt-8 sm:justify-start sm:pt-0 autocomplete">
+                    <input type="text"  class="px-4 py-3 rounded-full" name="location" id="autocomplete" placeholder="Locations" />
+                </div>
+                <div class="flex justify-center pt-8 sm:justify-start sm:pt-0 autocomplete">
+                    <input type="text"  class="px-4 py-3 rounded-full" name="website_name" placeholder="Domain" />
+                </div>
+                <div class="flex justify-center pt-8 sm:justify-start sm:pt-0 autocomplete">
+                    <select class="px-4 py-3 rounded-full" name="google_domain">
+                        <option value="">Select Google Domain</option>
+                        <option value="google.com">google.com</option>
+                        <option value="google.ca">google.ca</option>
+                    </select>
                 </div>
             </div>
+            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+                <button type="submit" class="btn btn-blue">Search</button>
+            </div>
+            @if (session('data'))
+                <h1>{{ session('data')['website_name'] }} positioned at {{session('data')['website_position']}} for the keyword "{{ session('data')['keyword'] }}" at google rank. </h1>
+            @endif
+            </form>
         </div>
     </body>
     <script src={{asset("js/jquery-1.8.2.min.js")}}></script>
