@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RankingKeyword;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 use Spatie\SimpleExcel\SimpleExcelReader;
@@ -37,12 +38,17 @@ class HomeController extends Controller
 
     public function search(Request $request)
     {
-        $responses = Http::withBasicAuth('mahmudrafid02@gmail.com','87d6555d164180e0')->post('https://api.dataforseo.com/v3/serp/google/organic/live/advanced', [[
-            'language_name' => 'English (United Kingdom)',
-            'location_name' => $request->location,
-            'keyword' => $request->keyword,
-            'se_domain' => $request->google_domain,
-        ]]);
+        $responses = Http::withBasicAuth(
+            config('seotracker.serp_api_mail'),
+            config('seotracker.serp_api_password')
+        )->post('https://api.dataforseo.com/v3/serp/google/organic/live/advanced', [
+            [
+                'language_name' => 'English (United Kingdom)',
+                'location_name' => $request->location,
+                'keyword' => $request->keyword,
+                'se_domain' => $request->google_domain,
+            ]
+        ]);
 
         $collected_data =  collect(collect($responses->object()->tasks)->first()->result[0]->items)->filter(function($item) use ($request){
             return Str::contains($item->domain ?? '', $request->website_name);
@@ -53,6 +59,10 @@ class HomeController extends Controller
         $data['website_position'] = $website_position;
         $data['website_name'] = $request->website_name;
         $data['keyword'] = $request->keyword;
+
+        // create or update
+        // RankingKeyword::create([]);
+        // RankingKeyword::create([]);
 
         return back()->with('data', $data);
     }

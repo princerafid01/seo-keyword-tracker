@@ -97,6 +97,6 @@ input, select {
         $('#autocomplete').autocomplete({
             lookup: JSON.parse(window.localStorage.getItem('locations')),
             minChars: 3
-        })
+        });
     </script>
 </html>
