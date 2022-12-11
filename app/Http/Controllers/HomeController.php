@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RankingKeyword;
+use App\Models\RankingLocation;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 use Spatie\SimpleExcel\SimpleExcelReader;
@@ -61,9 +62,22 @@ class HomeController extends Controller
         $data['keyword'] = $request->keyword;
 
         // create or update
-        // RankingKeyword::create([]);
-        // RankingKeyword::create([]);
+        $location = RankingLocation::updateOrCreate([
+            'name' => strtolower($request->location)
+        ],[]);
 
+        RankingKeyword::updateOrCreate(
+            [
+                'location_id' =>  $location->id,
+                'keyword' =>   $request->keyword,
+                'website' =>  $request->website_name,
+            ],
+            [
+                'current_ranking' =>    $website_position,
+            ]
+        );
+
+        // return datatables(RankingKeyword::query())->toJson();
         return back()->with('data', $data);
     }
 }

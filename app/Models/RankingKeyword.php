@@ -10,5 +10,13 @@ class RankingKeyword extends Model
     use HasFactory;
     protected $guarded = [];
 
-    
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
+    public function location()
+    {
+        return $this->hasOne(RankingLocation::class,'id','location_id');
+    }
+
 }
